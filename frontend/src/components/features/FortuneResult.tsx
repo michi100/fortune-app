@@ -82,7 +82,9 @@ function FortuneResult({
             {BLOOD_TYPES.find((b) => b.value === bloodType)?.label}の占い結果
           </h2>
           <div className="bg-white p-4 rounded-md mb-4 shadow-sm">
-            <p className="text-gray-800 leading-relaxed">{result}</p>
+            <p className="text-gray-800 leading-relaxed whitespace-pre-line">
+              {result}
+            </p>
           </div>
           <div className="flex gap-3 justify-center">
             <Button variant="primary" onClick={onReset}>
