@@ -1,13 +1,20 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 import { ZODIAC_SIGNS, BLOOD_TYPES } from "../../types";
-import type { ZodiacSign, BloodType } from "../../types";
+import { type ZodiacSign, type BloodType } from "../../types";
 
 interface FortuneResultProps {
-  zodiac: ZodiacSign;
-  bloodType: BloodType;
+  zodiac: string;
+  bloodType: string;
   onReset: () => void;
   onLockOptions: () => void;
+}
+
+function isValidZodiac(zodiac: string): zodiac is ZodiacSign {
+  return ZODIAC_SIGNS.some((z) => z.value === zodiac);
+}
+function isValidBloodType(bloodType: string): bloodType is BloodType {
+  return BLOOD_TYPES.some((b) => b.value === bloodType);
 }
 
 function FortuneResult({
@@ -16,6 +23,10 @@ function FortuneResult({
   onReset,
   onLockOptions,
 }: FortuneResultProps) {
+  if (!isValidZodiac(zodiac) || !isValidBloodType(bloodType)) {
+    return <div>エラー</div>;
+  }
+
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
@@ -24,8 +35,8 @@ function FortuneResult({
     setIsLoading(true);
 
     try {
-      // throw new Error("ネットワークアクセス失敗");
-      const response = await fetch("http://localhost:3001/api/fortune", {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
+      const response = await fetch(`${apiUrl}/api/fortune`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
